@@ -1,98 +1,200 @@
 # Languava
 
-## Project layout
+Languava is an AI-assisted English learning app designed to help users memorize vocabulary, practice sentence writing, and receive AI-powered correction and feedback.
 
-```
+The project focuses on four core learning features:
+
+1. Spaced repetition based on vocabulary familiarity
+2. AI sentence correction and evaluation
+3. Example sentence generation for vocabulary learning
+4. Word pronunciation playback with American / British accents
+
+---
+
+## Core Features
+
+### 1. Familiarity-based Spaced Repetition
+
+Users can mark each vocabulary word with a familiarity level.
+
+The system then schedules when the word should appear again for review.
+
+Example rule:
+
+| Familiarity Level | Next Review |
+| --- | --- |
+| Unfamiliar | 1 day later |
+| Normal | 7 days later |
+| Familiar | 14 days later |
+| Mastered | 30 days later |
+
+This helps users review difficult words more frequently and already-mastered words less frequently.
+
+---
+
+### 2. AI Sentence Correction
+
+Users can create their own sentences using vocabulary words.
+
+The backend sends the sentence to an AI service for correction and evaluation.
+
+The AI feedback may include:
+
+- Corrected sentence
+- Grammar feedback
+- Word usage suggestions
+- Fluency evaluation
+- Score or rating
+
+This helps users avoid unnatural word usage and incorrect sentence structure.
+
+---
+
+### 3. Example Sentence Support
+
+The system provides basic example sentences for vocabulary words.
+
+These examples help users understand how a word is used in context, especially when learning the word for the first time.
+
+---
+
+### 4. Word Pronunciation Playback
+
+Users can listen to the correct pronunciation of vocabulary words.
+
+The main target accents are:
+
+- American English
+- British English
+
+This feature helps users connect spelling, meaning, and pronunciation during vocabulary learning.
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- Flutter
+
+### Backend
+
+- FastAPI
+- PostgreSQL
+- Redis
+- Celery
+- Alembic
+- uv
+
+### AI / External Services
+
+- LLM service for sentence correction and feedback
+- Pronunciation or TTS service for word audio playback
+
+---
+
+## Project Structure
+
+```text
 Languava/
-├── .gitignore
 ├── README.md
+├── docs/
+│   ├── backend.md
+│   └── architecture/
+│       └── overall-system.drawio.svg
 └── backend/
     ├── pyproject.toml
     ├── alembic.ini
     ├── .env.example
     ├── alembic/
-    │   ├── env.py
-    │   ├── script.py.mako
-    │   └── versions/
     ├── app/
-    │   ├── main.py
-    │   ├── api/
-    │   │   ├── deps.py
-    │   │   └── v1/
-    │   │       ├── router.py
-    │   │       └── endpoints/
-    │   ├── core/
-    │   │   ├── config.py
-    │   │   └── security.py
-    │   ├── db/
-    │   │   ├── base.py
-    │   │   └── session.py
-    │   ├── models/
-    │   ├── schemas/
-    │   ├── services/
-    │   └── tasks/
-    │       ├── celery_app.py
-    │       └── worker.py
     ├── scripts/
     └── tests/
-        └── conftest.py
 ```
 
-## Backend
+---
 
-The backend is a [FastAPI](https://fastapi.tiangolo.com/) service. Dependencies are managed
-with [uv](https://docs.astral.sh/uv/), background jobs run on [Celery](https://docs.celeryq.dev/)
-with [Redis](https://redis.io/) as both broker and result backend, and database migrations are
-handled by [Alembic](https://alembic.sqlalchemy.org/).
+## Architecture
 
-### Top-level files
+The current high-level system architecture is stored in:
 
-| Path | Purpose |
+```text
+docs/architecture/overall-system.drawio.svg
+```
+
+### Overall System Architecture
+
+![Overall System Architecture](docs/architecture/overall-system.drawio.svg)
+
+---
+
+## Documentation
+
+Detailed technical documents are stored under `docs/`.
+
+| Document | Description |
 | --- | --- |
-| `pyproject.toml` | Project metadata and dependency declarations consumed by `uv`. |
-| `alembic.ini` | Alembic CLI configuration (database URL, script location, logging). |
-| `.env.example` | Template for the local `.env` file; documents every required variable. |
+| [Backend Documentation](docs/backend.md) | Backend project layout, FastAPI structure, Celery worker layer, and database migration structure. |
+| [Overall System Architecture](docs/architecture/overall-system.drawio.svg) | High-level system architecture diagram. |
 
-### `alembic/` — database migrations
+Future documentation may include:
 
-| Path | Purpose |
-| --- | --- |
-| `env.py` | Alembic runtime entry point; wires the SQLAlchemy metadata to the migration context. |
-| `script.py.mako` | Template used by `alembic revision` to scaffold new migration files. |
-| `versions/` | Generated migration revisions. Each file represents one schema change. |
+```text
+docs/
+├── api.md
+├── database.md
+├── frontend.md
+└── development.md
+```
 
-### `app/` — application package
+---
 
-The package follows a layered structure: HTTP layer (`api/`) → business logic (`services/`) →
-persistence (`models/`, `db/`). `schemas/` defines the boundary types between layers, `core/`
-holds cross-cutting concerns, and `tasks/` is the asynchronous worker layer.
+## Development Notes
 
-| Path | Purpose |
-| --- | --- |
-| `main.py` | Creates the FastAPI application, configures middleware, and mounts routers. |
-| `api/` | HTTP layer. Routers, endpoint handlers, and request/response wiring live here. |
-| `api/deps.py` | Reusable FastAPI dependencies (DB session, current user, pagination, etc.). |
-| `api/v1/router.py` | Aggregates all v1 endpoint routers into a single `APIRouter`. |
-| `api/v1/endpoints/` | One module per resource (e.g. `users.py`, `auth.py`). Keeps handlers thin. |
-| `core/` | Cross-cutting infrastructure that is not tied to any single feature. |
-| `core/config.py` | `Settings` class (pydantic-settings) that reads environment variables. |
-| `core/security.py` | Password hashing, JWT encoding/decoding, and auth primitives. |
-| `db/` | Database engine, session factory, and SQLAlchemy declarative base. |
-| `db/base.py` | Declarative `Base` plus model imports so Alembic autogenerate sees every table. |
-| `db/session.py` | SQLAlchemy `engine` and `SessionLocal`; exposes the dependency used by the API. |
-| `models/` | SQLAlchemy ORM models. One module per aggregate. |
-| `schemas/` | Pydantic schemas used for request validation and response serialization. |
-| `services/` | Business logic. Endpoints call into services; services own transactions and rules. |
-| `tasks/` | Celery application and task definitions. |
-| `tasks/celery_app.py` | Builds the Celery app, configures the Redis broker and result backend. |
-| `tasks/worker.py` | Registers Celery tasks. Imported by the Celery worker process at startup. |
+Architecture diagrams should be stored in:
 
-### `scripts/` — operational scripts
+```text
+docs/architecture/
+```
 
-One-off and maintenance scripts (data backfills, admin utilities, local bootstrap helpers).
-Anything not meant to ship as part of the running service belongs here.
+Recommended diagram format:
 
-### `tests/` — test suite
+```text
+.drawio.svg
+```
 
-Pytest test suite. `conftest.py` holds shared fixtures (test client, database, factories).
-Test modules mirror the layout of `app/`.
+This format allows diagrams to be:
+
+- displayed directly in GitHub README
+- edited with Draw.io Integration in VS Code
+- version-controlled through Git
+- reviewed through pull requests
+
+---
+
+## Getting Started
+
+Setup instructions will be added later.
+
+Planned setup sections:
+
+- Backend environment setup
+- Database setup
+- Redis setup
+- Celery worker setup
+- Frontend setup
+- Local development commands
+
+---
+
+## Status
+
+This project is currently in the early development stage.
+
+Current focus:
+
+- Define MVP scope
+- Build backend foundation
+- Design database schema
+- Implement vocabulary review flow
+- Implement AI sentence correction flow
