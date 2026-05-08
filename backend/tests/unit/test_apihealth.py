@@ -4,7 +4,6 @@ from app.main import app
 
 client = TestClient(app)
 
-
 def test_health_returns_ok():
     response = client.get("/health")
 
