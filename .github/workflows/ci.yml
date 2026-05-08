@@ -10,7 +10,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  unit-test:
+    name: FastAPI endpoint check
     runs-on: ubuntu-latest
     defaults:
       run:
