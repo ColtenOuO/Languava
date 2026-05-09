@@ -31,5 +31,11 @@ jobs:
       - name: Sync backend dependencies
         run: uv sync --frozen
 
+      - name: Ruff format check
+        run: uv run ruff format --check .
+      
+      - name: Ruff lint check
+        run: uv run ruff check .
+      
       - name: Run backend tests
         run: uv run pytest
