@@ -116,15 +116,31 @@ Languava/
 
 ## Architecture
 
-The current high-level system architecture is stored in:
+Architecture diagrams are stored under:
+
+```text
+docs/architecture/
+```
+
+### Overall System Architecture
+
+The high-level system architecture is stored in:
 
 ```text
 docs/architecture/overall-system.drawio.svg
 ```
 
-### Overall System Architecture
-
 ![Overall System Architecture](docs/architecture/overall-system.drawio.svg)
+
+### Backend API Detail Diagram
+
+The backend API detail diagram is stored in:
+
+```text
+docs/architecture/backend-api-detail.drawio.svg
+```
+
+![Backend API Detail Diagram](docs/architecture/backend-api-detail.drawio.svg)
 
 ---
 
@@ -136,6 +152,7 @@ Detailed technical documents are stored under `docs/`.
 | --- | --- |
 | [Backend Documentation](docs/backend.md) | Backend project layout, FastAPI structure, Celery worker layer, and database migration structure. |
 | [Overall System Architecture](docs/architecture/overall-system.drawio.svg) | High-level system architecture diagram. |
+| [Backend API Detail Diagram](docs/architecture/backend-api-detail.drawio.svg) | Backend API groups, service responsibilities, data access, async AI flow, and external service interactions. |
 
 Future documentation may include:
 
