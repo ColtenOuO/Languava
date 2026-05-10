@@ -140,9 +140,7 @@ The backend API detail diagram is stored in:
 docs/architecture/backend-api-detail.drawio.svg
 ```
 
-This diagram explains how frontend actions connect to backend API groups, service modules, data stores, async workers, and external AI/audio services.
-
-[View Backend API Detail Diagram](docs/architecture/backend-api-detail.drawio.svg)
+![Backend API Detail Diagram](docs/architecture/backend-api-detail.drawio.svg)
 
 ---
 
