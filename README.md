@@ -98,18 +98,29 @@ This feature helps users connect spelling, meaning, and pronunciation during voc
 ```text
 Languava/
 ├── README.md
+├── scripts/
+│   └── setup-dev.sh
 ├── docs/
 │   ├── backend.md
 │   └── architecture/
 │       └── overall-system.drawio.svg
-└── backend/
-    ├── pyproject.toml
-    ├── alembic.ini
-    ├── .env.example
-    ├── alembic/
-    ├── app/
-    ├── scripts/
-    └── tests/
+├── backend/
+│   ├── pyproject.toml
+│   ├── alembic.ini
+│   ├── .env.example
+│   ├── alembic/
+│   ├── app/
+│   ├── scripts/
+│   └── tests/
+└── frontend/
+    ├── pubspec.yaml
+    ├── lib/
+    ├── android/
+    ├── ios/
+    ├── web/
+    ├── windows/
+    ├── macos/
+    └── linux/
 ```
 
 ---
@@ -191,16 +202,52 @@ This format allows diagrams to be:
 
 ## Getting Started
 
-Setup instructions will be added later.
+### 1. Setup local development environment
 
-Planned setup sections:
+Run the setup script from the repository root:
 
-- Backend environment setup
-- Database setup
-- Redis setup
-- Celery worker setup
-- Frontend setup
-- Local development commands
+```bash
+bash scripts/setup-dev.sh
+```
+
+The script will:
+
+- install `uv` automatically if it is missing
+- sync backend dependencies with `uv sync`
+- create `backend/.env` from `backend/.env.example` if missing
+- run `flutter pub get` if `frontend/` exists and Flutter is installed
+
+The script does not overwrite existing `.env` files.
+
+---
+
+### 2. Start the backend
+
+Open a terminal and run:
+
+```bash
+cd backend
+uv run uvicorn app.main:app --reload
+```
+
+The backend should be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+### 3. Start the frontend
+
+Open another terminal and run:
+
+```bash
+cd frontend
+flutter run -d chrome
+```
+
+Flutter is not installed automatically by the setup script. Please install Flutter manually if you want to run the frontend locally.
 
 ---
 
