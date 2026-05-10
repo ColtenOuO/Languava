@@ -1,0 +1,42 @@
+name: Docker Smoke Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docker-compose-smoke:
+    name: Docker Compose smoke test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          load: true
+          tags: languava-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Start Docker Compose stack
+        run: docker compose up -d --wait
+
+      - name: Dump Docker Compose logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Tear down Docker Compose stack
+        if: always()
+        run: docker compose down -v

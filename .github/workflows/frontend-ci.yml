@@ -1,0 +1,19 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pass:
+    name: Pass placeholder
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pass
+        run: echo "Frontend CI test placeholder passed."
